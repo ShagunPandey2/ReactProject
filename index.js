@@ -1,74 +1,17 @@
-import express from "express";
-import mysql from "mysql";
-import cors from "cors";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "project",
-});
-
-app.get("/", (req, res) => {
-  res.json("hello");
-});
-
-app.get("/books", (req, res) => {
-  const q = "SELECT * FROM books";
-  db.query(q, (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.json(err);
-    }
-    return res.json(data);
-  });
-});
-
-app.post("/books", (req, res) => {
-  const q = "INSERT INTO books(`name`, `desc`, `account`) VALUES (?)";
-
-  const values = [
-    req.body.name,
-    req.body.desc,
-    req.body.account,
-  ];
-
-  db.query(q, [values], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
-  });
-});
-
-app.delete("/books/:id", (req, res) => {
-  const bookId = req.params.id;
-  const q = " DELETE FROM books WHERE id = ? ";
-
-  db.query(q, [bookId], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
-  });
-});
-
-app.put("/books/:id", (req, res) => {
-  const bookId = req.params.id;
-  const q = "UPDATE books SET `name`= ?, `desc`= ?, `account`= ? WHERE id = ?";
-
-  const values = [
-    req.body.name,
-    req.body.desc,
-    req.body.account,
-  ];
-
-  db.query(q, [...values,bookId], (err, data) => {
-    if (err) return res.send(err);
-    return res.json(data);
-  });
-});
-
-app.listen(8000, () => {
-  console.log("Connected to backend.");
-});
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
